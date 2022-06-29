@@ -3,7 +3,18 @@ import ffmpy
 import os
 
 
-def download(link, destination):
+def download_mp4(link, destination):
+    try:
+        yt = YouTube(link)
+
+        video = yt.streams.get_highest_resolution()
+        out = video.download(output_path=destination)
+        print('Downloaded: ', yt.title)
+    except:
+        print('Error Downloading: ', link)
+
+
+def download_mp3(link, destination):
     try:
         yt = YouTube(link)
 
@@ -36,11 +47,17 @@ def convert_to_mp3(input_file, output_file, filename="The file", delete_original
 
 
 def main():
-    file = open("links.txt", "r")
-    destination = file.readline().strip()
+    mp3_links_file = open("mp3.txt", "r")
+    destination = mp3_links_file.readline().strip()
 
-    for line in file:
-        download(line.strip(), destination)
+    for line in mp3_links_file:
+        download_mp3(line.strip(), destination)
+
+    mp4_links_file = open("mp4.txt", "r")
+    destination = mp4_links_file.readline().strip()
+
+    for line in mp4_links_file:
+        download_mp4(line.strip(), destination)
 
 
 main()
