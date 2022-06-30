@@ -4,26 +4,47 @@ import os
 
 
 def download_mp4(link, destination):
+    title = None
+    if ',' in link:
+        title = link[link.index(',') + 1:].strip() + '.mp4'
+        link = link[:link.index(',')]
+
     try:
         yt = YouTube(link)
+        if title is None:
+            title = yt.title + '.mp4'
 
         video = yt.streams.get_highest_resolution()
-        out = video.download(output_path=destination)
-        print('Downloaded: ', yt.title)
+        if not os.path.exists(title):
+            out = video.download(output_path=destination, filename=title)
+            print('Downloaded: ', title)
+        else:
+            print(f'\'{title}\' already exists. Delete or rename the original file and try again.')
     except:
         print('Error Downloading: ', link)
 
 
 def download_mp3(link, destination):
+    title = None
+    if ',' in link:
+        title = link[link.index(',') + 1:].strip() + '.mp4'
+        link = link[:link.index(',')]
+
     try:
         yt = YouTube(link)
+        if title is None:
+            title = yt.title + '.mp4'
 
         video = yt.streams.get_audio_only()
-        out = video.download(output_path=destination)
+        if not os.path.exists(title):
+            out = video.download(output_path=destination, filename=title)
+        else:
+            out = video.download(output_path=destination, filename='hadiuf729108349yhjksd.mp4')
+            # this is a randomly generated name for a temporary file that the user is unlikely to have in their computer
 
-        base, ext = os.path.splitext(out)
-        if convert_to_mp3(out, base + '.mp3', yt.title, True):
-            print('Downloaded: ', yt.title)
+        title = title[:-4] + '.mp3'
+        if convert_to_mp3(out, title, title, True):
+            print('Downloaded: ', title)
     except:
         print('Error Downloading: ', link)
 
@@ -38,7 +59,7 @@ def convert_to_mp3(input_file, output_file, filename="The file", delete_original
         ff.run()
         is_converted_successfully = True
     else:
-        print(f'{filename} already exists. Delete the original and try again.')
+        print(f'\'{filename}\' already exists. Delete or rename the original file and try again.')
 
     if delete_original:
         os.remove(input_file)
