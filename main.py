@@ -43,23 +43,23 @@ def download_mp3(link, destination):
             # this is a randomly generated name for a temporary file that the user is unlikely to have in their computer
 
         title = title[:-4] + '.mp3'
-        if convert_to_mp3(out, title, title, True):
+        if convert_to_mp3(out, title, destination , True):
             print('Downloaded: ', title)
     except:
         print('Error Downloading: ', link)
 
 
-def convert_to_mp3(input_file, output_file, filename="The file", delete_original=False):
+def convert_to_mp3(input_file, output_file, destination = '.', delete_original=False):
     is_converted_successfully = False
     if not os.path.exists(output_file):
         ff = ffmpy.FFmpeg(
             inputs={input_file: None},
-            outputs={output_file: None}
+            outputs={destination + '/' + output_file: None}
         )
         ff.run()
         is_converted_successfully = True
     else:
-        print(f'\'{filename}\' already exists. Delete or rename the original file and try again.')
+        print(f'\'{output_file}\' already exists. Delete or rename the original file and try again.')
 
     if delete_original:
         os.remove(input_file)
