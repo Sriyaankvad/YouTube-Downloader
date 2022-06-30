@@ -1,5 +1,5 @@
 # YouTube-Downloader
-Simple downloader for YouTube videos (Currently only mp3)
+Simple downloader for YouTube videos
 
 **Requirements**
 1. pytube
