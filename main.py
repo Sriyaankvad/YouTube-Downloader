@@ -3,7 +3,7 @@ import ffmpy
 import os
 
 
-def download_mp4(link, destination):
+def download(link, destination='.', mime_type='mp4'):
     title = None
     if ',' in link:
         title = link[link.index(',') + 1:].strip() + '.mp4'
@@ -17,39 +17,23 @@ def download_mp4(link, destination):
         video = yt.streams.get_highest_resolution()
         if not os.path.exists(title):
             out = video.download(output_path=destination, filename=title)
-            print('Downloaded: ', title)
-        else:
-            print(f'\'{title}\' already exists. Delete or rename the original file and try again.')
-    except:
-        print('Error Downloading: ', link)
-
-
-def download_mp3(link, destination):
-    title = None
-    if ',' in link:
-        title = link[link.index(',') + 1:].strip() + '.mp4'
-        link = link[:link.index(',')]
-
-    try:
-        yt = YouTube(link)
-        if title is None:
-            title = yt.title + '.mp4'
-
-        video = yt.streams.get_audio_only()
-        if not os.path.exists(title):
-            out = video.download(output_path=destination, filename=title)
-        else:
+            if mime_type == 'mp4':
+                print('Downloaded: ', title)
+        elif mime_type == 'mp3':
             out = video.download(output_path=destination, filename='hadiuf729108349yhjksd.mp4')
             # this is a randomly generated name for a temporary file that the user is unlikely to have in their computer
+        else:
+            print(f'\'{title}\' already exists. Delete or rename the original file and try again.')
 
-        title = title[:-4] + '.mp3'
-        if convert_to_mp3(out, title, destination , True):
-            print('Downloaded: ', title)
+        if mime_type == 'mp3':
+            title = title[:-4] + '.mp3'
+            if convert_to_mp3(out, title, destination, True):
+                print('Downloaded: ', title)
     except:
         print('Error Downloading: ', link)
 
 
-def convert_to_mp3(input_file, output_file, destination = '.', delete_original=False):
+def convert_to_mp3(input_file, output_file, destination='.', delete_original=False):
     is_converted_successfully = False
     if not os.path.exists(output_file):
         ff = ffmpy.FFmpeg(
@@ -72,13 +56,13 @@ def main():
     destination = mp3_links_file.readline().strip()
 
     for line in mp3_links_file:
-        download_mp3(line.strip(), destination)
+        download(line.strip(), destination, 'mp3')
 
     mp4_links_file = open("mp4.txt", "r")
     destination = mp4_links_file.readline().strip()
 
     for line in mp4_links_file:
-        download_mp4(line.strip(), destination)
+        download(line.strip(), destination, 'mp4')
 
 
 main()
